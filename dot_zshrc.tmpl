@@ -75,6 +75,9 @@ _zsh_custom="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 [[ -r "$_zsh_custom/plugins/chezmoi_edit.plugin.zsh"    ]] && source "$_zsh_custom/plugins/chezmoi_edit.plugin.zsh"
 unset _zsh_custom
 
+# ── Navigation (zoxide) ───────────────────────────────────────────────────────
+command -v zoxide >/dev/null && eval "$(zoxide init --cmd z zsh)"
+
 # ── Shell options ─────────────────────────────────────────────────────────────
 unsetopt correct_all   # argument correction is too aggressive
 setopt correct         # command correction only
