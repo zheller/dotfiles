@@ -1,0 +1,35 @@
+[repository]
+repository = "/tmp/repo"
+password-command = "op read op://{{ .onepassword.vault }}/rustic/password"
+no-cache = true
+
+[backup]
+glob-files = ["{{ .chezmoi.homeDir }}/.config/rustic/rustic.glob"]
+exclude-if-present = [".nobackup", "CACHEDIR.TAG"]
+
+
+[[backup.snapshots]]
+name = "home"
+sources = [
+    "{{ .chezmoi.homeDir }}/Desktop",
+    "{{ .chezmoi.homeDir }}/Documents",
+    "{{ .chezmoi.homeDir }}/Downloads",
+    "{{ .chezmoi.homeDir }}/Pictures",
+    "{{ .chezmoi.homeDir }}/Brewfile",
+    "{{ .chezmoi.homeDir }}/.local/share/chezmoi",
+    "{{ .chezmoi.homeDir }}/src",
+]
+git-ignore = true
+
+{{- with .paths.cloudbox }}
+[[backup.snapshots]]
+name = "cloudbox"
+sources= ["{{ . }}"]
+git-ignore = true
+
+{{- end }}
+[[backup.snapshots]]
+name = "mashbookm1-backup"
+sources= ["{{ .chezmoi.homeDir }}/.backup"]
+git-ignore = true
+

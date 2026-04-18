@@ -1,0 +1,22 @@
+default:
+    @just --list
+
+format:
+    stylua .
+
+fmt-check:
+    stylua --check .
+
+luac:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    while IFS= read -r file; do
+        luac -p "$file"
+    done < <(rg --files . -g '*.lua')
+
+health:
+    nvim --headless "+checkhealth" "+lua print(table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), '\n'))" "+qa"
+
+validate: fmt-check luac health
+
+lint: validate

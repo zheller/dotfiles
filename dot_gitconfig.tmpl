@@ -1,0 +1,60 @@
+[user]
+    name = {{ default "Your Name" .identity.name | quote }}
+    email = {{ default "you@example.com" .identity.email | quote }}
+[branch]
+    autosetuprebase = always
+[color]
+    ui = true
+[color "diff"]
+    whitespace = red reverse
+[alias]
+    a = "add -A"
+    st = status
+    stat = diff --stat
+    ci = commit
+    cam = commit -a --amend
+    df = diff
+    co = checkout
+    col = checkout-linear
+    com = checkout master
+    pul = pull
+    prm = pull --rebase origin main
+    hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+    br = branch --sort=-committerdate --format='%(align:width=13)%(HEAD)%(if)%(HEAD)%(then)%(color:green)%(end) %(committerdate:short) %(refname:short) %(end)'
+    brhist = branch --sort=-committerdate
+    ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+    ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+    le = log --oneline --decorate
+[core]
+    editor = nvim
+    pager = delta
+	excludesFile = ~/.gitignore
+[interactive]
+    diffFilter = delta --color-only
+[add.interactive]
+    useBuiltin = false
+[delta] 
+    syntax-theme = Monokai Extended
+    navigate = true
+    light = false 
+    side-by-side = true
+[merge]
+    ff = only
+    conflictstyle = diff3
+[url "git@github.com:"]
+    # Always use Github SSH protocol
+    insteadOf = https://github.com
+[rerere]
+    enabled = true
+[log]
+    decorate = short
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+[filter "lfs"]
+	clean = git-lfs clean %f
+	smudge = git-lfs smudge %f
+	required = true
+[http "https://gopkg.in"]
+	followRedirects = true
+[credential]
+	helper = osxkeychain

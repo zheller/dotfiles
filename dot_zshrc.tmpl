@@ -1,0 +1,158 @@
+# shellcheck shell=bash
+
+# ── Environment ───────────────────────────────────────────────────────────────
+export EDITOR='nvim'
+export NVM_DIR="$HOME/.nvm"
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
+export HOMEBREW_AUTO_UPDATE_SECS=1209600  # 14 days
+export HOMEBREW_BOOTSNAP=true
+export AWS_PAGER=''
+export GAMCFGDIR=''
+export DOCKER_CLI_HINTS=false
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+export MANROFFOPT="-c"
+
+# ── fpath / completions ────────────────────────────────────────────────────────
+[[ -n ${HOMEBREW_PREFIX:-} ]] && fpath=("$HOMEBREW_PREFIX/share/zsh/site-functions" $fpath)
+
+_eza_compdir="$(brew --prefix eza 2>/dev/null)/share/zsh/site-functions"
+[[ -d $_eza_compdir ]] && fpath=("${_eza_compdir:A}" $fpath)
+unset _eza_compdir
+
+fpath+=~/.zfunc
+zstyle ':completion:*' menu select
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zcompcache
+
+# ── FZF ───────────────────────────────────────────────────────────────────────
+export FZF_DEFAULT_COMMAND='cd $(git rev-parse --show-toplevel 2>/dev/null || echo .) && fd . --hidden --type file -X ls -1tud'
+
+_fzf_prefix=""
+if [[ -n ${HOMEBREW_PREFIX:-} && -r "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh" ]]; then
+  _fzf_prefix="${HOMEBREW_PREFIX}/opt/fzf"
+elif command -v brew >/dev/null 2>&1; then
+  _fzf_prefix="$(brew --prefix fzf 2>/dev/null)"
+fi
+if [[ -o interactive && -t 0 && -n $_fzf_prefix ]]; then
+  [[ -r "$_fzf_prefix/shell/key-bindings.zsh" ]] && source "$_fzf_prefix/shell/key-bindings.zsh"
+  [[ -r "$_fzf_prefix/shell/completion.zsh"   ]] && source "$_fzf_prefix/shell/completion.zsh"
+fi
+unset _fzf_prefix
+
+# ── Plugins (Antidote) ────────────────────────────────────────────────────────
+_zsh_plugins_txt="${ZDOTDIR:-$HOME}/.zsh_plugins.txt"
+_zsh_plugins_zsh="${ZDOTDIR:-$HOME}/.zsh_plugins.zsh"
+_antidote_script=""
+
+if [[ -n ${HOMEBREW_PREFIX:-} && -r "${HOMEBREW_PREFIX}/opt/antidote/share/antidote/antidote.zsh" ]]; then
+  _antidote_script="${HOMEBREW_PREFIX}/opt/antidote/share/antidote/antidote.zsh"
+elif command -v brew >/dev/null 2>&1; then
+  _antidote_prefix="$(brew --prefix antidote 2>/dev/null)"
+  [[ -n $_antidote_prefix && -r "${_antidote_prefix}/share/antidote/antidote.zsh" ]] && \
+    _antidote_script="${_antidote_prefix}/share/antidote/antidote.zsh"
+  unset _antidote_prefix
+fi
+
+if [[ -n $_antidote_script ]]; then
+  source "$_antidote_script"
+  if [[ -r $_zsh_plugins_txt ]]; then
+    [[ ! -r $_zsh_plugins_zsh || $_zsh_plugins_txt -nt $_zsh_plugins_zsh ]] && \
+      antidote bundle <"$_zsh_plugins_txt" >"$_zsh_plugins_zsh"
+    source "$_zsh_plugins_zsh"
+  else
+    print -u2 "[zsh] missing plugin list: $_zsh_plugins_txt"
+  fi
+else
+  print -u2 "[zsh] antidote not found — run: brew install antidote"
+fi
+unset _antidote_script _zsh_plugins_txt _zsh_plugins_zsh
+
+# ── Custom plugins / aliases ───────────────────────────────────────────────────
+_zsh_custom="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+[[ -r "$_zsh_custom/aliases.zsh"                        ]] && source "$_zsh_custom/aliases.zsh"
+[[ -r "$_zsh_custom/plugins/autolazy_nvm.plugin.zsh"    ]] && source "$_zsh_custom/plugins/autolazy_nvm.plugin.zsh"
+[[ -r "$_zsh_custom/plugins/chezmoi_edit.plugin.zsh"    ]] && source "$_zsh_custom/plugins/chezmoi_edit.plugin.zsh"
+unset _zsh_custom
+
+# ── Shell options ─────────────────────────────────────────────────────────────
+unsetopt correct_all   # argument correction is too aggressive
+setopt correct         # command correction only
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+
+# ── tmux ──────────────────────────────────────────────────────────────────────
+[[ -z "$TMUX" ]] && tmux new-session -A -s main
+
+# ── Key bindings ──────────────────────────────────────────────────────────────
+bindkey '^[OA' up-line-or-history
+bindkey '^[[A' up-line-or-history
+bindkey '^[OB' down-line-or-history
+bindkey '^[[B' down-line-or-history
+
+# ── Named directories ─────────────────────────────────────────────────────────
+{{- with .paths.icloud_root }}
+hash -d icloud="{{ . }}"
+{{- end }}
+{{- with .paths.cloudbox }}
+hash -d cloudbox="{{ . }}"
+{{- end }}
+
+# ── Functions ─────────────────────────────────────────────────────────────────
+function check_brew_status() {
+    local brew_cmd="${HOMEBREW_PREFIX:+$HOMEBREW_PREFIX/bin/brew}"
+    brew_cmd="${brew_cmd:-$(command -v brew)}"
+    [[ -z $brew_cmd ]] && return 0
+    "$brew_cmd" bundle check --file "$HOME/Brewfile" >/dev/null 2>&1 && return
+    print "${fg_bold[red]}WARNING: Brew bundle is out of date!\nRun: brew bundle install/clean${reset_color}"
+}
+
+function tail-json-pretty {
+    stdbuf -o0 jq -C -r -R "fromjson? | ." | sed 's/\\n/\n/g; s/\\t/\t/g'
+}
+
+function tail-docker-pretty {
+    docker logs -f "$1" | stdbuf -o0 jq -C -r -R "fromjson? | ." | sed 's/\\n/\n/g; s/\\t/\t/g'
+}
+
+function newlines {
+    sed 's/\\n/\n/g; s/\\t/\t/g'
+}
+
+# Needed by some git completion paths.
+__git_files () { _wanted files expl 'local files' _files }
+
+# Make `uv run <file>` use file completion rather than uv subcommand completion.
+_uv_run_mod() {
+    if [[ "$words[2]" == "run" && "$words[CURRENT]" != -* ]]; then
+        _arguments '*:filename:_files'
+    else
+        _uv "$@"
+    fi
+}
+compdef _uv_run_mod uv
+
+# ── 1Password ─────────────────────────────────────────────────────────────────
+# Resolve env file: repo-local takes precedence over global.
+_op_envfile() {
+  if   [[ -f ./.env.op  ]]; then echo ./.env.op
+  elif [[ -f ./.env.1p  ]]; then echo ./.env.1p
+  elif [[ -f ${XDG_CONFIG_HOME:-$HOME/.config}/op/env ]]; then
+    echo "${XDG_CONFIG_HOME:-$HOME/.config}/op/env"
+  else return 1
+  fi
+}
+
+# Run a command with secrets injected from env file.
+oprun() {
+  local envfile
+  envfile="$(_op_envfile)" || { command "$@"; return $?; }
+  op run --no-masking --env-file "$envfile" -- "$@"
+}
+
+# ── Prompt (Starship) ─────────────────────────────────────────────────────────
+command -v starship >/dev/null && eval "$(starship init zsh)"
+
+# ── Local overrides ───────────────────────────────────────────────────────────
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

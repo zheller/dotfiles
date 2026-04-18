@@ -1,0 +1,61 @@
+# Ignore junk
+# --- macOS / editor noise
+!**/.DS_Store
+!**/*.swp
+!**/*.tmp
+
+# --- JavaScript / TypeScript
+!**/node_modules/**
+!**/.next/**
+!**/.nuxt/**
+!**/.svelte-kit/**
+!**/.turbo/**
+!**/.parcel-cache/**
+!**/.vite/**
+!**/dist/**
+!**/build/**
+!**/coverage/**
+
+# --- Python
+!**/__pycache__/**
+!**/*.py[cod]
+!**/.pytest_cache/**
+!**/.mypy_cache/**
+!**/.ruff_cache/**
+!**/.tox/**
+!**/.nox/**
+!**/.venv/**
+!**/venv/**
+!**/.ipynb_checkpoints/**
+!**/.coverage
+!**/htmlcov/**
+
+# --- Rust
+!**/target/**
+
+# --- Go
+!**/*.out
+
+# --- Java / Kotlin / Gradle / Maven
+!**/target/**
+!**/.gradle/**
+!**/build/**
+
+# --- .NET
+!**/bin/**
+!**/obj/**
+!**/.vs/**
+
+# --- Swift / Xcode
+!**/DerivedData/**
+!**/.build/**
+!**/*.xcuserstate
+!**/xcuserdata/**
+
+# --- C / C++ / CMake
+!**/CMakeFiles/**
+!**/cmake-build-*/**
+!**/*.o
+!**/*.a
+!**/*.so
+!**/*.dylib

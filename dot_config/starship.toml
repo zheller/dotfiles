@@ -1,0 +1,45 @@
+add_newline = false
+
+format = "$username$hostname $directory$git_branch$git_status$character"
+
+[username]
+show_always = true
+format = "[$user]($style)"
+style_user = "white"
+style_root = "red bold"
+
+[hostname]
+ssh_only = false
+format = "[@$hostname]($style)"
+style = "white"
+
+[directory]
+style = "bold blue"
+truncation_length = 5
+truncate_to_repo = false
+
+[git_branch]
+symbol = ""
+format = "[\\($branch]($style)"
+style = "dimmed white"
+
+[git_status]
+format = "$all_status[\\)](dimmed white)$ahead_behind "
+conflicted = "[=](red)"
+ahead = "[⇡](blue)"
+behind = "[⇣](blue)"
+diverged = "[⇕](magenta)"
+up_to_date = "[✓](green)"
+untracked = "[?](yellow)"
+stashed = "[\\$](cyan)"
+modified = "[!](red)"
+staged = "[+](green)"
+renamed = "[»](purple)"
+deleted = ""
+typechanged = "[~](yellow)"
+style = "white"
+
+[character]
+success_symbol = "[›](bold white)"
+error_symbol = "[›](bold red)"
+vimcmd_symbol = "[‹](bold white)"

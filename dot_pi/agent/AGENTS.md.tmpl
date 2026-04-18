@@ -1,0 +1,9 @@
+# Global Pi Instructions
+
+- Reusable package-managed skills are located in:
+  - `{{ .paths.ai_toolbox }}/skills`
+- When a skill references relative paths (e.g., `./scripts/...`), resolve them from that skill’s own directory (the folder containing its `SKILL.md`).
+- Prefer absolute paths or `cd` into the skill directory before running skill scripts.
+- In terminal-focused responses, avoid LaTeX math markup (e.g., `\\cdot`, `\\Rightarrow`). Prefer plain-text/ASCII math like `*`, `=>`, and `~` for maximum compatibility.
+- Chezmoi manages all dotfiles.
+- The pi tool environment is non-interactive (no TTY), so avoid commands that prompt on `/dev/tty`; prefer non-interactive flags or targeted apply operations.

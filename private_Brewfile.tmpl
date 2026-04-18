@@ -1,0 +1,80 @@
+# Managed by chezmoi.
+# Base toolchain required by tracked dotfiles/config lives here in the repo.
+# Add machine-specific/private packages in ~/.config/chezmoi/chezmoi.toml under [data.homebrew].
+
+# Required taps
+# Used by 1Password-backed secret loading and terraform aliases.
+tap "1password/tap"
+tap "hashicorp/tap"
+
+# Required formulae
+# Used directly by tracked shell/git/tmux/neovim/pi/backup config.
+brew "antidote"
+brew "bat"
+brew "chezmoi"
+brew "coreutils"
+brew "docker"
+brew "eza"
+brew "fd"
+brew "fzf"
+brew "git-delta"
+brew "git-lfs"
+brew "gnu-tar"
+brew "grep"
+brew "ipython"
+brew "jq"
+brew "just"
+brew "lazygit"
+brew "lua"
+brew "neovim"
+brew "ollama", restart_service: :changed
+brew "python@3.12"
+brew "ripgrep"
+brew "rsync"
+brew "rustic"
+brew "starship"
+brew "stylua"
+brew "tmux"
+brew "uv"
+brew "zoxide"
+brew "hashicorp/tap/terraform"
+
+# Required casks
+# Used by 1Password-backed env/secret loading and Docker workflows.
+cask "1password"
+cask "1password-cli"
+cask "docker-desktop"
+
+# Additional/private taps
+{{- range .homebrew.taps }}
+tap {{ . | quote }}
+{{- end }}
+
+# Additional/private formulae
+{{- range .homebrew.brews }}
+{{- if eq . "ollama" }}
+brew {{ . | quote }}, restart_service: :changed
+{{- else }}
+brew {{ . | quote }}
+{{- end }}
+{{- end }}
+
+# Additional/private casks
+{{- range .homebrew.casks }}
+cask {{ . | quote }}
+{{- end }}
+
+# Additional/private VS Code extensions
+{{- range .homebrew.vscode }}
+vscode {{ . | quote }}
+{{- end }}
+
+# Additional/private Go tools
+{{- range .homebrew.go }}
+go {{ . | quote }}
+{{- end }}
+
+# Additional/private uv tools
+{{- range .homebrew.uv }}
+uv {{ . | quote }}
+{{- end }}

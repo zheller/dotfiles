@@ -1,0 +1,6 @@
+.git
+vendor
+public
+public/*
+!public/locales
+*.js.map

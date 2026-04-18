@@ -1,0 +1,21 @@
+typeset -U path
+
+export GOPATH="$HOME/gocode"
+export XDG_CONFIG_HOME="$HOME/.config"
+
+path=(
+  $HOME/bin
+  /usr/local/bin
+  /usr/local/sbin
+  $HOME/.local/bin
+  $GOPATH/bin
+  /opt/homebrew/opt/grep/libexec/gnubin
+  /opt/homebrew/opt/coreutils/libexec/gnubin
+  /opt/homebrew/opt/postgresql@16/bin
+  $HOME/.cargo/bin
+  $path
+)
+
+if command -v brew >/dev/null 2>&1; then
+  eval "$(/usr/bin/env brew shellenv)"
+fi

@@ -1,0 +1,43 @@
+*.po
+.DS_STORE
+*.sublime-project
+*.sublime-workspace
+npm-debug.log
+*.sw[mnop]
+.env
+env
+venv
+.venv
+.sass-cache
+.bash_history
+*/.netrwhist
+.ropeproject
+celerybeat.pid
+*/.tern-project
+.vim/plugged
+*/.zsh_history
+.zsh_history
+.idea/
+.zsh_secrets
+.aider.chat.history.md
+
+# General
+.AppleDouble
+.LSOverride
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+

@@ -1,0 +1,9 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+# Managed by chezmoi.
+# Reuse delta styling from ~/.gitconfig; only disable delta's own pager here.
+gui:
+  sidePanelWidth: 0.25
+git:
+  pagers:
+    - pager: delta --paging=never
+      colorArg: always

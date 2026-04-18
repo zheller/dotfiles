@@ -1,0 +1,4 @@
+chezmoi.toml
+.tmp-cache
+.tmp-data
+.tmp-state
