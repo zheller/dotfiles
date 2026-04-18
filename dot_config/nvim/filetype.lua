@@ -2,11 +2,15 @@ vim.filetype.add({
   filename = {
     [".bashrc.tmpl"] = "bash",
     [".gitconfig.tmpl"] = "gitconfig",
+    [".tmux.conf"] = "tmux",
+    [".tmux.conf.tmpl"] = "tmux",
     [".zprofile.tmpl"] = "zsh",
     [".zshenv.tmpl"] = "zsh",
     [".zshrc.tmpl"] = "zsh",
     ["dot_bashrc"] = "bash",
     ["dot_gitconfig"] = "gitconfig",
+    ["dot_tmux.conf"] = "tmux",
+    ["dot_tmux.conf.tmpl"] = "tmux",
     ["dot_zprofile"] = "zsh",
     ["dot_zshenv"] = "zsh",
     ["dot_zshrc"] = "zsh",
@@ -17,6 +21,7 @@ vim.filetype.add({
       local filetype_map = {
         bashrc = "bash",
         gitconfig = "gitconfig",
+        ["tmux.conf"] = "tmux",
         zprofile = "zsh",
         zshenv = "zsh",
         zshrc = "zsh",
