@@ -1,5 +1,10 @@
 vim.filetype.add({
   filename = {
+    [".bashrc.tmpl"] = "bash",
+    [".gitconfig.tmpl"] = "gitconfig",
+    [".zprofile.tmpl"] = "zsh",
+    [".zshenv.tmpl"] = "zsh",
+    [".zshrc.tmpl"] = "zsh",
     ["dot_bashrc"] = "bash",
     ["dot_gitconfig"] = "gitconfig",
     ["dot_zprofile"] = "zsh",
@@ -7,8 +12,8 @@ vim.filetype.add({
     ["dot_zshrc"] = "zsh",
   },
   pattern = {
-    [".*[/\\]dot_[^/\\]+%.tmpl"] = function(path)
-      local name = vim.fs.basename(path):match("^dot_(.+)%.tmpl$")
+    [".*%.tmpl"] = function(path)
+      local basename = vim.fs.basename(path)
       local filetype_map = {
         bashrc = "bash",
         gitconfig = "gitconfig",
@@ -16,10 +21,18 @@ vim.filetype.add({
         zshenv = "zsh",
         zshrc = "zsh",
       }
-      return filetype_map[name] or name
-    end,
-    [".*%.([^.]+)%.tmpl"] = function(_, _, ext)
-      return ext
+
+      local chezmoi_name = basename:match("^dot_(.+)%.tmpl$")
+      if chezmoi_name then
+        return filetype_map[chezmoi_name] or chezmoi_name
+      end
+
+      local dotfile_name = basename:match("^%.(.+)%.tmpl$")
+      if dotfile_name then
+        return filetype_map[dotfile_name] or dotfile_name
+      end
+
+      return basename:match("%.([^.]+)%.tmpl$")
     end,
     [".*/dot_.*%.json"] = "json",
     [".*/dot_.*%.lua"] = "lua",

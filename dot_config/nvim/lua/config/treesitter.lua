@@ -28,6 +28,9 @@ function M.setup()
 	local treesitter_config = require("nvim-treesitter.configs")
 	local get_install_dir = treesitter_config.get_install_dir
 
+	-- Reuse the bash parser for zsh buffers.
+	vim.treesitter.language.register("bash", "zsh")
+
 	treesitter.setup({
 		install_dir = install_dir,
         ensure_installed = treesitter_filetypes,
@@ -45,7 +48,7 @@ function M.setup()
 	end
 
 
-	for _, filetype in ipairs(treesitter_filetypes) do
+	for _, filetype in ipairs(vim.list_extend(vim.deepcopy(treesitter_filetypes), { "zsh" })) do
 		vim.api.nvim_create_autocmd("FileType", {
 			pattern = filetype,
 			callback = function(args)

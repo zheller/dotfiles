@@ -1,14 +1,5 @@
 # language=bash
-# Ensure Homebrew paths stay ahead of system after path_helper runs.
-if command -v brew >/dev/null 2>&1; then
-  eval "$(/usr/bin/env brew shellenv)"
-  _brew_prefix="$(brew --prefix 2>/dev/null)"
-  if [[ -n $_brew_prefix ]]; then
-    path=(
-      "$_brew_prefix/bin"
-      "$_brew_prefix/sbin"
-      $path
-    )
-  fi
-  unset _brew_prefix
+# Homebrew login-shell initialization after macOS path_helper has run.
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
