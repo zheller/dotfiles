@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat >&2 <<'EOF'
+Usage: opcred [--dry-run] [--vault <vault>] <item-name> <field-name>
+
+Create a 1Password item as a Secure Note with one concealed field.
+The secret is prompted for with hidden input.
+
+Options:
+  -n, --dry-run        Preview the item without creating it
+  -v, --vault <vault>  Vault to create the item in
+  -h, --help           Show this help
+
+Environment:
+  OPCRED_DEFAULT_VAULT Default vault to use when --vault is not provided
+EOF
+}
+
+dry_run=false
+vault_name=${OPCRED_DEFAULT_VAULT:-}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -n|--dry-run)
+      dry_run=true
+      shift
+      ;;
+    -v|--vault)
+      if [[ $# -lt 2 ]]; then
+        printf 'Missing value for %s.\n' "$1" >&2
+        exit 2
+      fi
+      vault_name=$2
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -*)
+      printf 'Unknown option: %s\n' "$1" >&2
+      usage
+      exit 2
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+if [[ $# -ne 2 ]]; then
+  usage
+  exit 2
+fi
+
+item_title=$1
+field_label=$2
+secret=''
+
+if [[ -t 0 && -r /dev/tty ]]; then
+  read -r -s -p "Paste secret for ${item_title} / ${field_label}: " secret < /dev/tty
+  printf '\n' > /dev/tty
+else
+  IFS= read -r secret || true
+fi
+
+if [[ -z $secret ]]; then
+  printf 'Secret cannot be empty.\n' >&2
+  exit 1
+fi
+
+template_json=$(op item template get 'Secure Note')
+
+create_args=()
+if [[ -n $vault_name ]]; then
+  create_args+=(--vault "$vault_name")
+fi
+if [[ $dry_run == true ]]; then
+  create_args+=(--dry-run)
+fi
+
+python3 - "$item_title" "$field_label" 3<<<"$template_json" 4<<<"$secret" <<'PY' | op item create "${create_args[@]}" -
+import json
+import os
+import sys
+
+title = sys.argv[1]
+label = sys.argv[2]
+with os.fdopen(3) as template_fd:
+    item = json.load(template_fd)
+with os.fdopen(4) as secret_fd:
+    secret = secret_fd.read()
+
+if secret.endswith("\n"):
+    secret = secret[:-1]
+
+item["title"] = title
+item["fields"].append({
+    "type": "CONCEALED",
+    "label": label,
+    "value": secret,
+})
+
+json.dump(item, sys.stdout)
+PY

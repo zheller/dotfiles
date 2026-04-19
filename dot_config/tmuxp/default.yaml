@@ -1,0 +1,16 @@
+# Use via `tmuxp load .`.
+# A shell wrapper rewrites `.` -> `default` and injects `-s <git-root-name>`.
+session_name: default
+shell_command_before:
+  - 'git_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"; cd "$git_root"'
+windows:
+  - window_name: work
+    layout: even-vertical
+    focus: true
+    panes:
+      - shell_command: pi
+        focus: true
+      - shell_command: vim
+  - window_name: git
+    panes:
+      - shell_command: lazygit
