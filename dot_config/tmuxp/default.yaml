@@ -5,12 +5,16 @@ shell_command_before:
   - 'git_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"; cd "$git_root"'
 windows:
   - window_name: work
-    layout: even-vertical
+    layout: main-horizontal
     focus: true
+    options:
+      main-pane-height: 67%
     panes:
+      - shell_command: vim
       - shell_command: pi
         focus: true
-      - shell_command: vim
+      - shell_command:
+
   - window_name: git
     panes:
       - shell_command: lazygit
