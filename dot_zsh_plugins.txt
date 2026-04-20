@@ -4,4 +4,5 @@
 # Fast completion initialization
 mattmc3/ez-compinit
 
+zsh-users/zsh-autosuggestions
 zsh-users/zsh-syntax-highlighting
