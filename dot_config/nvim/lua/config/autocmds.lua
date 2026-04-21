@@ -7,7 +7,7 @@ function M.setup()
 
 	vim.o.autoread = true
 	local autoread_group = augroup("autoread", { clear = true })
-	local uv = vim.uv or vim.loop
+	local uv = vim.uv
 	M._fs_watchers = M._fs_watchers or {}
 
 	if M._autoread_scan_timer and not M._autoread_scan_timer:is_closing() then

@@ -11,7 +11,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
-		branch = "master",
+		branch = "main",
 		build = ":TSUpdate",
 	},
 	{ "nvim-lualine/lualine.nvim" },

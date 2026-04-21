@@ -58,3 +58,38 @@ oprun() {
   op run --no-masking --env-file "$envfile" -- "$@"
 }
 
+# Run pi's commit skill non-interactively and stream assistant output.
+picommit() {
+  local prompt="/skill:commit"
+  if (( $# > 0 )); then
+    prompt+=" ${(j: :)@}"
+  fi
+
+  GIT_TERMINAL_PROMPT=0 pi --no-session \
+    --provider openai-codex \
+    --model gpt-5.4 \
+    --thinking low \
+    --skill /Users/zheller/src/ai-toolbox/skills/commit \
+    --mode json "$prompt" | python3 -c '
+import json, sys
+
+for line in sys.stdin:
+    try:
+        event = json.loads(line)
+    except Exception:
+        continue
+
+    if event.get("type") == "message_update":
+        msg = event.get("message") or {}
+        delta = event.get("assistantMessageEvent") or {}
+        if msg.get("role") == "assistant" and delta.get("type") == "text_delta":
+            sys.stdout.write(delta.get("delta", ""))
+            sys.stdout.flush()
+    elif event.get("type") == "message_end":
+        msg = event.get("message") or {}
+        if msg.get("role") == "assistant":
+            sys.stdout.write("\n")
+            sys.stdout.flush()
+'
+}
+

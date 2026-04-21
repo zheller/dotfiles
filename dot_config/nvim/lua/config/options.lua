@@ -11,7 +11,6 @@ function M.setup()
 	opt.expandtab = true
 	opt.tabstop = 4
 	opt.foldlevelstart = 99
-	opt.hidden = true
 	opt.laststatus = 2
 	opt.mouse = "a"
 	opt.backup = false
@@ -26,7 +25,6 @@ function M.setup()
 		"node_modules/**",
 	}
 	opt.fixeol = true
-	opt.regexpengine = 0
 	opt.updatetime = 100
 	opt.encoding = "utf-8"
 	opt.signcolumn = "yes"
