@@ -2,11 +2,17 @@ typeset -U path
 
 export GOPATH="$HOME/gocode"
 export XDG_CONFIG_HOME="$HOME/.config"
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home
+export MAESTRO_CLI_NO_ANALYTICS=true
+export MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
 
 path=(
   $HOME/bin
   $HOME/.local/bin
   $GOPATH/bin
   $HOME/.cargo/bin
+  $ANDROID_HOME/emulator
+  $ANDROID_HOME/platform-tools
   $path
 )

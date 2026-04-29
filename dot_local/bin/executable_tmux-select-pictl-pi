@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PICTL_DIR="${PICTL_DIR:-$HOME/src/pictl}"
+
+# Find the running pictl process pane, not the Pi agent pane, then switch this client to it.
+target="$(
+  tmux list-panes -a -F '#{pane_id}|#{session_name}:#{window_index}|#{pane_current_command}|#{pane_current_path}|#{pane_title}' \
+    | awk -F '|' -v dir="$PICTL_DIR" '
+        $4 == dir && $3 == "uv" { found = 1; print $1 "|" $2; exit }
+        $4 == dir && $3 ~ /^(pictl|python|python3)$/ { fallback = $1 "|" $2 }
+        END { if (!found && fallback) print fallback }
+      '
+)"
+
+if [[ -z "$target" ]]; then
+  tmux display-message "No open pictl process pane found"
+  exit 1
+fi
+
+pane_id="${target%%|*}"
+window_target="${target#*|}"
+
+tmux switch-client -t "$window_target"
+tmux select-pane -t "$pane_id"

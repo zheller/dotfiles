@@ -38,23 +38,32 @@
     navigate = true
     light = false 
     side-by-side = true
+[diff]
+    algorithm = histogram
+[fetch]
+    prune = true
 [merge]
     ff = only
     conflictstyle = diff3
-[url "git@github.com:"]
-    # Always use Github SSH protocol
-    insteadOf = https://github.com
+[pull]
+    rebase = true
+[rebase]
+    autoStash = true
+    updateRefs = true
 [rerere]
     enabled = true
 [log]
     decorate = short
-[url "ssh://git@github.com/"]
-    insteadOf = https://github.com/
 [filter "lfs"]
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
-[http "https://gopkg.in"]
-	followRedirects = true
 [credential]
 	helper = osxkeychain
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+[url "git@github.com:"]
+    # Always use Github SSH protocol
+    insteadOf = https://github.com
+[http "https://gopkg.in"]
+	followRedirects = true

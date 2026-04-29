@@ -41,6 +41,14 @@ return {
 				view = {
 					adaptive_size = true,
 				},
+				renderer = {
+					highlight_git = "name",
+					icons = {
+						show = {
+							git = false,
+						},
+					},
+				},
 				filters = {
 					dotfiles = false,
 					custom = function(path)
@@ -55,7 +63,7 @@ return {
 				},
 				actions = {
 					open_file = {
-						quit_on_open = true,
+						quit_on_open = false,
 					},
 				},
 			})

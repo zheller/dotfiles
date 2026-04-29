@@ -262,22 +262,32 @@ function M.setup()
 	})
 
 
-	autocmd("FileType", {
-		group = augroup("nvim-tree", { clear = true }),
-		pattern = "fzf",
-		callback = function(args)
-			autocmd("BufLeave", {
-				buffer = args.buf,
-				callback = function()
-					local ok, api = pcall(require, "nvim-tree.api")
+	local nvim_tree_group = augroup("nvim-tree", { clear = true })
 
-					if ok then
-						api.tree.close()
-					end
-				end,
-			})
+	autocmd("VimEnter", {
+		group = nvim_tree_group,
+		callback = function(args)
+			local path = args.file
+			local is_directory = path ~= "" and vim.fn.isdirectory(path) == 1
+			local has_file_args = vim.fn.argc(-1) > 0
+
+			if not is_directory and has_file_args then
+				return
+			end
+
+			local ok, api = pcall(require, "nvim-tree.api")
+			if not ok then
+				return
+			end
+
+			if is_directory then
+				vim.cmd.cd(vim.fn.fnameescape(path))
+			end
+
+			api.tree.open()
 		end,
 	})
+
 end
 
 return M

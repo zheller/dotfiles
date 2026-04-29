@@ -68,7 +68,9 @@ function M.setup()
 
 	map("x", "<C-r>", [["hy:%s/<C-r>h//gc<left><left><left>]])
 
-	map("n", "<C-N>", "<Cmd>NvimTreeToggle<CR>", { silent = true })
+	map("n", "<C-N>", function()
+		require("nvim-tree.api").tree.focus()
+	end, { silent = true, desc = "Focus file tree" })
 	map("n", "<Leader>R", refresh_tree, { silent = true })
 
 	map({ "n", "x", "o" }, "<C-z>", "<Nop>")

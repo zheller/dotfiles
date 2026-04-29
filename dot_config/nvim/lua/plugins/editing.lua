@@ -5,13 +5,15 @@ return {
 	{
 		"lewis6991/gitsigns.nvim",
 		opts = {
+			linehl = true,
+			signcolumn = true,
 			signs = {
 				add = { text = "▎" },
 				change = { text = "▎" },
-				delete = { text = "" },
-				topdelete = { text = "" },
-				changedelete = { text = "▎" },
-				untracked = { text = "▎" },
+				delete = { text = "_", show_count = true },
+				topdelete = { text = "‾", show_count = true },
+				changedelete = { text = "~", show_count = true },
+				untracked = { text = "┆" },
 			},
 			on_attach = function(bufnr)
 				local gs = package.loaded.gitsigns
@@ -25,7 +27,7 @@ return {
 				map("n", "<leader>hr", gs.reset_hunk, "Reset hunk")
 				map("v", "<leader>hs", function() gs.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Stage hunk")
 				map("v", "<leader>hr", function() gs.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end, "Reset hunk")
-				map("n", "<leader>hp", gs.preview_hunk, "Preview hunk")
+				map("n", "<leader>hp", gs.preview_hunk_inline, "Preview hunk")
 				map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, "Blame line")
 				map("n", "<leader>hd", gs.diffthis, "Diff this")
 			end,

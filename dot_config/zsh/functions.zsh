@@ -68,7 +68,7 @@ picommit() {
   GIT_TERMINAL_PROMPT=0 pi --no-session \
     --provider openai-codex \
     --model gpt-5.4 \
-    --thinking low \
+    --thinking off \
     --skill /Users/zheller/src/ai-toolbox/skills/commit \
     --mode json "$prompt" | python3 -c '
 import json, sys
