@@ -13,7 +13,8 @@ return {
 			vim.g.fzf_layout = { up = "40%" }
 			vim.g.fzf_history_dir = "~/.local/share/fzf-history"
 			-- Override shell FZF_DEFAULT_OPTS with nvim-specific settings
-			vim.env.FZF_DEFAULT_OPTS = "--preview 'bat --color=always --style=numbers {}' --preview-window right:60%:wrap"
+			vim.env.FZF_DEFAULT_OPTS =
+				"--preview 'bat --color=always --style=numbers {}' --preview-window right:60%:wrap"
 		end,
 	},
 	{
@@ -37,7 +38,19 @@ return {
 				node_modules = true,
 			}
 
+			local git_diff_tree = require("custom.git_diff_tree")
+
 			require("nvim-tree").setup({
+				on_attach = function(bufnr)
+					local api = require("nvim-tree.api")
+					api.map.on_attach.default(bufnr)
+
+					vim.keymap.set("n", "gD", git_diff_tree.toggle, {
+						buffer = bufnr,
+						silent = true,
+						desc = "Toggle git diff tree",
+					})
+				end,
 				view = {
 					adaptive_size = true,
 				},
@@ -59,11 +72,15 @@ return {
 							or name:match("%.pyc$")
 							or name:match("prof$")
 							or name:match("^%.coverage")
+							or git_diff_tree.should_filter_path(path)
 					end,
 				},
 				actions = {
 					open_file = {
 						quit_on_open = false,
+						window_picker = {
+							enable = false,
+						},
 					},
 				},
 			})
