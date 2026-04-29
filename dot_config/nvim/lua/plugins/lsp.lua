@@ -62,9 +62,11 @@ return {
 				sourcekit_caps.textDocument.semanticTokens = nil
 			end
 
-			-- sourcekit-lsp: use Xcode toolchain binary.
+			-- sourcekit-lsp: use Xcode toolchain binary and prefer buildServer.json
+			-- when present. This keeps Xcode/watchOS projects on xcode-build-server
+			-- instead of falling back to SwiftPM just because a Package.swift is nearby.
 			vim.lsp.config("sourcekit", {
-				cmd = { "xcrun", "sourcekit-lsp" },
+				cmd = { "xcrun", "sourcekit-lsp", "--default-workspace-type", "buildServer" },
 				capabilities = sourcekit_caps,
 				root_dir = function(bufnr, on_dir)
 					on_dir(sourcekit_root(bufnr))
