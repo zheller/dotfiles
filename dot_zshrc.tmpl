@@ -61,6 +61,9 @@ else
 fi
 unset _zsh_plugins_txt _zsh_plugins_zsh
 
+# ── Completions ───────────────────────────────────────────────────────────────
+command -v just >/dev/null && eval "$(just --completions zsh)"
+
 # ── Custom zsh files ───────────────────────────────────────────────────────────
 _zsh_custom="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 [[ -r "$_zsh_custom/functions.zsh" ]] && source "$_zsh_custom/functions.zsh"
