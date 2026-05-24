@@ -2,7 +2,7 @@
 # Managed by chezmoi.
 # Reuse delta styling from ~/.gitconfig; only disable delta's own pager here.
 gui:
-  sidePanelWidth: 0.25
+  sidePanelWidth: 0.1
 git:
   pagers:
     - pager: delta --paging=never

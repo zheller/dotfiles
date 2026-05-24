@@ -5,7 +5,7 @@ return {
 	{
 		"lewis6991/gitsigns.nvim",
 		opts = {
-			linehl = true,
+			linehl = false,
 			signcolumn = true,
 			signs = {
 				add = { text = "▎" },

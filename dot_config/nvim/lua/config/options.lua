@@ -3,7 +3,7 @@ local M = {}
 function M.setup()
 	local opt = vim.opt
 
-	opt.ambiwidth = "double"
+	opt.ambiwidth = "single"
 	opt.autoindent = true
 	opt.autoread = true
 	opt.clipboard = "unnamed"

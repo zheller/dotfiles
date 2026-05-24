@@ -20,6 +20,42 @@ newlines() {
   sed 's/\\n/\n/g; s/\\t/\t/g'
 }
 
+# Run a command until it succeeds, but do not restart after intentional stop signals.
+failsafe() {
+  if (( $# == 0 )); then
+    print -u2 "usage: failsafe <command> [args...]"
+    print -u2 "optional: FAILSAFE_DELAY=2"
+    return 2
+  fi
+
+  local delay="${FAILSAFE_DELAY:-2}"
+  local exit_code signal_name
+
+  while true; do
+    "$@"
+    exit_code=$?
+
+    case "$exit_code" in
+      0)
+        return 0
+        ;;
+      129|130|131|143)
+        case "$exit_code" in
+          129) signal_name="SIGHUP" ;;
+          130) signal_name="SIGINT" ;;
+          131) signal_name="SIGQUIT" ;;
+          143) signal_name="SIGTERM" ;;
+        esac
+        print -u2 "failsafe: command stopped by ${signal_name}; not restarting."
+        return "$exit_code"
+        ;;
+    esac
+
+    print -u2 "failsafe: command exited with status ${exit_code}; restarting in ${delay}s. Press Ctrl-C to stop."
+    sleep "$delay" || return 130
+  done
+}
+
 # Needed by some git completion paths.
 __git_files() {
   _wanted files expl 'local files' _files

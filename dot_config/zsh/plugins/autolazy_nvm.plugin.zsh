@@ -57,9 +57,9 @@ load-nvmrc() {
     if [ -n "$nvmrc_path" ]; then
         # If we are switiching to a directory that has an nvm of the same
         # version, exit early to speed up cd
-        if (which nvm_version 2>/dev/null &>/dev/null); then
-            nvmrc_version="$(cat $nvmrc_path)"
-            if [[ "$(nvm version)" = "$(nvm version $nvmrc_version)"  ]]; then
+        if (command -v nvm_version >/dev/null 2>&1); then
+            nvmrc_version="$(<"$nvmrc_path")"
+            if [[ "$(nvm version)" = "$(nvm version "$nvmrc_version")"  ]]; then
                 return
             fi
         fi

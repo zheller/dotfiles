@@ -15,5 +15,24 @@ return {
 		build = ":TSUpdate",
 	},
 	{ "nvim-lualine/lualine.nvim" },
+	{
+		"NvChad/nvim-colorizer.lua",
+		event = { "BufReadPre", "BufNewFile" },
+		opts = {
+			filetypes = { "*" },
+			user_default_options = {
+				RGB = true,
+				RRGGBB = true,
+				RRGGBBAA = true,
+				AARRGGBB = true,
+				rgb_fn = true,
+				hsl_fn = true,
+				css = true,
+				css_fn = true,
+				mode = "background",
+				names = false,
+			},
+		},
+	},
 	{ "nvim-lua/plenary.nvim" },
 }

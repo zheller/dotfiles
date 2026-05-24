@@ -14,6 +14,7 @@ local function apply_sonokai_highlights()
         highlight! link typescriptIdentifierName Function
         highlight! link IncSearch DiffText
         highlight! link Search DiffText
+        highlight! DiffDelete guifg=NONE guibg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
         highlight! ColorColumn ctermbg=235
         highlight! DiagnosticUnderlineError cterm=undercurl guisp=darkred
         highlight! DiagnosticUnderlineError gui=undercurl term=underline

@@ -176,6 +176,72 @@ function M.setup()
 		end
 	end
 
+	local auto_session_group = augroup("auto-session", { clear = true })
+	local function has_ui()
+		return #vim.api.nvim_list_uis() > 0
+	end
+
+	local startup_argc = vim.fn.argc(-1)
+	local startup_arg = startup_argc == 1 and vim.fn.argv(0) or nil
+	local startup_arg_path = nil
+	if type(startup_arg) == "string" and startup_arg ~= "" then
+		startup_arg_path = vim.fn.fnamemodify(startup_arg, ":p")
+	end
+
+	local function startup_directory_arg()
+		if startup_argc ~= 1 then
+			return nil
+		end
+
+		if type(startup_arg_path) ~= "string" or startup_arg_path == "" or vim.fn.isdirectory(startup_arg_path) ~= 1 then
+			return nil
+		end
+
+		return startup_arg_path
+	end
+
+	M._auto_session_interactive = false
+	M._auto_session_active = false
+	M._auto_session_checked = false
+
+	local function maybe_load_session()
+		if M._auto_session_checked or vim.g.auto_session_enabled == false or not has_ui() then
+			return
+		end
+
+		M._auto_session_checked = true
+		M._auto_session_interactive = true
+
+		local directory_arg = startup_directory_arg()
+		if startup_argc > 0 and not directory_arg then
+			return
+		end
+
+		if directory_arg then
+			vim.cmd.cd(vim.fn.fnameescape(vim.fn.fnamemodify(directory_arg, ":p")))
+		end
+
+		M._auto_session_active = true
+		commands.load_session({ silent = true, missing_ok = true })
+	end
+
+	autocmd({ "UIEnter", "VimEnter" }, {
+		group = auto_session_group,
+		nested = true,
+		callback = maybe_load_session,
+	})
+
+	autocmd("VimLeavePre", {
+		group = auto_session_group,
+		callback = function()
+			if vim.g.auto_session_enabled == false or not M._auto_session_active then
+				return
+			end
+
+			commands.save_session({ silent = true, skip_empty = true })
+		end,
+	})
+
 	autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI", "TermLeave", "TermClose" }, {
 		group = autoread_group,
 		callback = function()
@@ -266,12 +332,13 @@ function M.setup()
 
 	autocmd("VimEnter", {
 		group = nvim_tree_group,
-		callback = function(args)
-			local path = args.file
-			local is_directory = path ~= "" and vim.fn.isdirectory(path) == 1
-			local has_file_args = vim.fn.argc(-1) > 0
+		callback = function()
+			if vim.g.auto_session_loaded then
+				return
+			end
 
-			if not is_directory and has_file_args then
+			local directory_arg = startup_directory_arg()
+			if startup_argc > 0 and not directory_arg then
 				return
 			end
 
@@ -280,8 +347,8 @@ function M.setup()
 				return
 			end
 
-			if is_directory then
-				vim.cmd.cd(vim.fn.fnameescape(path))
+			if directory_arg then
+				vim.cmd.cd(vim.fn.fnameescape(directory_arg))
 			end
 
 			api.tree.open()

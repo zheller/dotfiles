@@ -27,6 +27,52 @@ return {
 		"nvim-tree/nvim-tree.lua",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
+			local last_focused_winid
+
+			local function is_tree_target_window(winid)
+				if not winid or not vim.api.nvim_win_is_valid(winid) then
+					return false
+				end
+
+				local config = vim.api.nvim_win_get_config(winid)
+				if config.relative ~= "" then
+					return false
+				end
+
+				local bufnr = vim.api.nvim_win_get_buf(winid)
+				return vim.bo[bufnr].filetype ~= "NvimTree"
+			end
+
+			local function remember_focused_window(winid)
+				if is_tree_target_window(winid) then
+					last_focused_winid = winid
+				end
+			end
+
+			local function get_last_focused_window()
+				if is_tree_target_window(last_focused_winid) then
+					return last_focused_winid
+				end
+
+				for _, winid in ipairs(vim.api.nvim_list_wins()) do
+					if is_tree_target_window(winid) then
+						last_focused_winid = winid
+						return winid
+					end
+				end
+
+				return -1
+			end
+
+			remember_focused_window(vim.api.nvim_get_current_win())
+
+			vim.api.nvim_create_autocmd("WinEnter", {
+				group = vim.api.nvim_create_augroup("nvim-tree-last-focused-window", { clear = true }),
+				callback = function()
+					remember_focused_window(vim.api.nvim_get_current_win())
+				end,
+			})
+
 			local ignored_names = {
 				env = true,
 				[".git"] = true,
@@ -79,7 +125,8 @@ return {
 					open_file = {
 						quit_on_open = false,
 						window_picker = {
-							enable = false,
+							enable = true,
+							picker = get_last_focused_window,
 						},
 					},
 				},

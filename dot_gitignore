@@ -4,6 +4,7 @@
 *.sublime-workspace
 npm-debug.log
 *.sw[mnop]
+Session.vim
 .env
 env
 venv
