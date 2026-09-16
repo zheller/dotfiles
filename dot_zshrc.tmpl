@@ -135,5 +135,11 @@ hash -d cloudbox="{{ . }}"
 # ── Prompt (Starship) ─────────────────────────────────────────────────────────
 command -v starship >/dev/null && eval "$(starship init zsh)"
 
+# --- Dir env 
+eval "$(direnv hook zsh)"
+
+# ── History (Atuin) ───────────────────────────────────────────────────────────
+command -v atuin >/dev/null && eval "$(atuin init zsh)"
+
 # ── Local overrides ───────────────────────────────────────────────────────────
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

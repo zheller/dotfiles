@@ -1,4 +1,6 @@
 .git
+# Keep .env-like files visible to search tools even when gitignored.
+!.env*
 vendor
 public
 public/*

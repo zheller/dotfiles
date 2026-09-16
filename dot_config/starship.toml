@@ -18,6 +18,11 @@ style = "bold blue"
 truncation_length = 5
 truncate_to_repo = false
 
+[terraform]
+format = "[ tf:$workspace]($style)"
+style = "dimmed purple"
+disabled = false
+
 [git_branch]
 symbol = ""
 format = "[\\($branch]($style)"

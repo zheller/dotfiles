@@ -46,6 +46,7 @@ local treesitter_filetypes = {
 	"zsh",
 	"dockerfile",
 	"terraform",
+	"terraform-vars",
 	"nginx",
 }
 

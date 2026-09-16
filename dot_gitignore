@@ -9,6 +9,7 @@ Session.vim
 env
 venv
 .venv
+.envrc
 .sass-cache
 .bash_history
 */.netrwhist

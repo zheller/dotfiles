@@ -1,0 +1,42 @@
+{
+  "defaultModel": "gpt-5.6-sol",
+  "defaultProvider": "openai-codex",
+  "defaultThinkingLevel": "low",
+  "httpIdleTimeoutMs": 0,
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 32768,
+    "keepRecentTokens": 12000
+  },
+  "retry": {
+    "enabled": true,
+    "maxRetries": 1,
+    "baseDelayMs": 2000,
+    "provider": {
+      "timeoutMs": 1800000,
+      "maxRetries": 0,
+      "maxRetryDelayMs": 60000
+    }
+  },
+  "doubleEscapeAction": "tree",
+  "enableInstallTelemetry": false,
+  "enabledModels": [
+    "anthropic/claude-sonnet-4-6",
+    "openai-codex/gpt-5.6-sol",
+    "openai-codex/gpt-5.5",
+    "ollama/qwen3.6:35b-mlx",
+    "ollama/gemma4:latest"
+  ],
+  "hideThinkingBlock": false,
+  "lastChangelogVersion": "0.80.6",
+  "packages": [
+    "/Users/zheller/src/ai-toolbox",
+    "npm:pi-mono-linear",
+    "npm:pi-mcp-adapter"
+  ],
+  "showHardwareCursor": true,
+  "skills": [
+    "/Users/zheller/src/pi-skills/browser-tools/"
+  ],
+  "theme": "dark"
+}

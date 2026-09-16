@@ -1,3 +1,8 @@
+local default_file_command = table.concat({
+	"(rg --files --hidden -g '!.git'",
+	"rg --files --hidden --no-ignore --max-depth 1 -g '.env*')",
+}, "; ") .. " | awk '!seen[$0]++'"
+
 return {
 	-- ── Navigation / UI ──────────────────────────────────────────────────
 	{
@@ -12,7 +17,9 @@ return {
 		init = function()
 			vim.g.fzf_layout = { up = "40%" }
 			vim.g.fzf_history_dir = "~/.local/share/fzf-history"
-			-- Override shell FZF_DEFAULT_OPTS with nvim-specific settings
+			-- Respect gitignore generally, but include ignored .env* files.
+			vim.env.FZF_DEFAULT_COMMAND = default_file_command
+			-- Override shell FZF_DEFAULT_OPTS with nvim-specific settings.
 			vim.env.FZF_DEFAULT_OPTS =
 				"--preview 'bat --color=always --style=numbers {}' --preview-window right:60%:wrap"
 		end,
@@ -110,6 +117,7 @@ return {
 				},
 				filters = {
 					dotfiles = false,
+					exclude = { "/%.env[^/]*$" },
 					custom = function(path)
 						local name = vim.fs.basename(path)
 

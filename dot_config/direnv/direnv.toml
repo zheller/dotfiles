@@ -1,0 +1,7 @@
+# Managed by chezmoi.
+# Trust the Powerlifting repo and worktree checkouts.
+[whitelist]
+prefix = [
+  "/Users/zheller/src/powerlifting/",
+  "/Users/zheller/src/powerlifting.worktrees/",
+]

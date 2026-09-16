@@ -51,7 +51,9 @@ function M.setup()
 		open_scratch(true)
 	end, { silent = true, desc = "Open scratch buffer in split" })
 
-	map("n", "''", "<C-^>", { silent = true })
+	-- Go back to the previous jump-list location, whether it is in this file
+	-- or another one. This replaces the old alternate-file toggle.
+	map("n", "''", "<C-o>", { silent = true, desc = "Jump back" })
 
 	map("n", "<C-J>", "<Cmd>bnext<CR>", { silent = true })
 	map("n", "<C-H>", "<Cmd>bprevious<CR>", { silent = true })
@@ -76,8 +78,8 @@ function M.setup()
 	map({ "n", "x", "o" }, "<C-z>", "<Nop>")
 
 	map("n", "<leader>t", function()
-		fzf_open("FZF")
-	end, { silent = true })
+		fzf_open("Files")
+	end, { silent = true, desc = "Find files" })
 
 	map("n", "<leader>g", "<Cmd>Rg<CR>", { silent = true })
 	map("n", "<leader>r", "<Cmd>Rg<CR>", { silent = true })

@@ -10,6 +10,7 @@ alias cze="chezmoi edit"
 alias cza="chezmoi apply"
 alias cat='bat --plain --paging=never --color=always'
 alias lg=lazygit
+alias glogin='gcloud auth login zack@threadsafe.ai --update-adc --force'
 tpd() {
   local git_root workspace session_name current_session reload=0
 
